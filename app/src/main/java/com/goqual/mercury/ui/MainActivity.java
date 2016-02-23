@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.goqual.mercury.R;
 import com.goqual.mercury.data.local.dto.FeedDTO;
 import com.goqual.mercury.presenter.FeedPresenter;
-import com.goqual.mercury.service.SyncDataService;
 import com.goqual.mercury.ui.base.BaseActivity;
 import com.goqual.mercury.util.Common;
 
@@ -45,9 +44,9 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         getFeedPresenter().attachView(this);
         getFeedPresenter().loadFeeds();
 
-        if (getIntent().getBooleanExtra(EXTRA_TRIGGER_SYNC_FLAG, true)) {
-            startService(SyncDataService.getStartIntent(this));
-        }
+//        if (getIntent().getBooleanExtra(EXTRA_TRIGGER_SYNC_FLAG, true)) {
+//            startService(SyncDataService.getStartIntent(this));
+//        }
     }
 
     @Override

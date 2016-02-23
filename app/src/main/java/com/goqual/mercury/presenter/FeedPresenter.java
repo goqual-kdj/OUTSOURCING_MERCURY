@@ -2,13 +2,13 @@ package com.goqual.mercury.presenter;
 
 import com.goqual.mercury.data.DataManager;
 import com.goqual.mercury.data.local.dto.FeedDTO;
+import com.goqual.mercury.data.remote.FeedService;
 import com.goqual.mercury.ui.MainMvpView;
 import com.goqual.mercury.util.Common;
 
 import java.util.List;
 
-import rx.Subscriber;
-import rx.Subscription;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -17,8 +17,8 @@ import rx.schedulers.Schedulers;
  */
 public class FeedPresenter extends BasePresenter<MainMvpView>{
     private final String TAG = "PRESENTER_FEED";
-    private Subscription mSubscription;
     private DataManager mDataManager = null;
+    private FeedService mFeedService = null;
 
     @Override
     public void attachView(MainMvpView mvpView) {
@@ -28,14 +28,13 @@ public class FeedPresenter extends BasePresenter<MainMvpView>{
     @Override
     public void detachView() {
         super.detachView();
-        if (mSubscription != null) mSubscription.unsubscribe();
     }
 
     public void loadFeeds() {
-        mSubscription = getDataManager().getFeeds()
+        getFeedService().getFeedApi().getFeeds()
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<List<FeedDTO>>() {
+                .subscribe(new Observer<List<FeedDTO>>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -55,6 +54,13 @@ public class FeedPresenter extends BasePresenter<MainMvpView>{
                         }
                     }
                 });
+    }
+
+    private FeedService getFeedService() {
+        if (mFeedService == null)
+            mFeedService = new FeedService();
+
+        return mFeedService;
     }
 
     private DataManager getDataManager() {
