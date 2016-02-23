@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MERCURY</string>
+    <string name="EXTRA_TRIGGER_SYNC_FLAG">EXTRA_TRIGGER_SYNC_FLAG</string>
 </resources>
