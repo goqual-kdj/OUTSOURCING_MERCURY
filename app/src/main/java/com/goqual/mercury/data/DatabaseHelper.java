@@ -17,7 +17,7 @@ public class DatabaseHelper {
     private final String TAG = "MERCURY_HELPER_DATABASE";
 
     public Observable<List<FeedDTO>> getFeeds() {
-        return RealmManager.createFeedDAO().gets();
+        return new RealmManager().createFeedDAO().gets();
     }
 
     public Observable<FeedDTO> setFeeds(final Collection<FeedDTO> newFeeds) {
@@ -27,7 +27,7 @@ public class DatabaseHelper {
                 if (subscriber.isUnsubscribed()) return;
                 Common.log(TAG, "THREAD ID : " + Thread.currentThread().getId());
                 try {
-                    FeedDAO dao = RealmManager.createFeedDAO();
+                    FeedDAO dao = new RealmManager().createFeedDAO();
                     dao.deleteAll();
                     Common.log(TAG, "TEST");
                     for(FeedDTO feed : newFeeds) {

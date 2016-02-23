@@ -10,26 +10,30 @@ import io.realm.Realm;
  */
 public class RealmManager {
     private static final String TAG = "REALM_MANAGER";
-    private static Realm mRealm;
+    private Realm mRealm;
 
-    public static Realm open() {
+    public RealmManager() {
+        checkForOpenRealm();
+    }
+
+    public Realm open() {
         if (mRealm == null)
             mRealm = Realm.getDefaultInstance();
         return mRealm;
     }
-    public static void close() {
+    public void close() {
         if (mRealm != null) {
             mRealm.close();
         }
     }
-    private static void checkForOpenRealm() {
+    private void checkForOpenRealm() {
         if (mRealm == null || mRealm.isClosed()) {
             open();
             //throw new IllegalStateException("RetrofitManager: Realm is closed, call open() method first");
         }
     }
 
-    public static FeedDAO createFeedDAO() {
+    public FeedDAO createFeedDAO() {
         Common.log(TAG, "THREAD ID : " + Thread.currentThread().getId());
         checkForOpenRealm();
         return new FeedDAO(mRealm);
