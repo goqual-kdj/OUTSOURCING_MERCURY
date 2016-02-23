@@ -17,12 +17,17 @@ public class DataManager {
     private FeedService mFeedService = null;
     private DatabaseHelper mDatabaseHelper= null;
 
+    public Observable<List<FeedDTO>> getFeeds() {
+        return getDatabaseHelper().getFeeds().distinct();
+        //return getDatabaseHelper().getFeeds();
+    }
+
     public Observable<FeedDTO> syncFeeds() {
         return getFeedService().getFeedApi().getFeeds()
                 .concatMap(new Func1<List<FeedDTO>, Observable<FeedDTO>>() {
                     @Override
                     public Observable<FeedDTO> call(List<FeedDTO> feeds) {
-                        Common.log(TAG, "" + feeds.get(0).get_feedid());
+                        Common.log(TAG, "THREAD ID : " + Thread.currentThread().getId());
                         return getDatabaseHelper().setFeeds(feeds);
                     }
                 });

@@ -1,7 +1,5 @@
 package com.goqual.mercury.data.local.dao;
 
-import android.support.annotation.NonNull;
-
 import com.goqual.mercury.data.local.dto.FeedDTO;
 import com.goqual.mercury.data.model.Feed;
 
@@ -10,28 +8,35 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by ladmusician on 2/23/16.
  */
 public class FeedDAO {
     private Realm mRealm = null;
-    public FeedDAO(@NonNull Realm realm) {
-        this.mRealm = realm;
+
+    public FeedDAO(Realm mRealm) {
+        this.mRealm = mRealm;
     }
 
-    public List<FeedDTO> gets() {
+    public Observable<List<FeedDTO>> gets() {
         mRealm.beginTransaction();
-        List<FeedDTO> rtv = new ArrayList<>();
         RealmResults<Feed> results = mRealm.where(Feed.class).findAll();
-        results.sort("seq", Sort.DESCENDING);
+        Observable<List<FeedDTO>> observableResult = results.asObservable().map(new Func1<RealmResults<Feed>, List<FeedDTO>>() {
+            @Override
+            public List<FeedDTO> call(RealmResults<Feed> feeds) {
+                List<FeedDTO> rtv = new ArrayList<FeedDTO>();
+                for(Feed feed : feeds) {
+                    rtv.add(convertToDTO(feed));
+                }
 
-        for(Feed each : results) {
-            rtv.add(convertToDTO(each));
-        }
+                return rtv;
+            }
+        });
         mRealm.commitTransaction();
-        return rtv;
+        return observableResult;
     }
 
     public FeedDTO getById(int id) {

@@ -41,6 +41,8 @@ public class SyncDataService extends Service {
         if (mSubscription != null && !mSubscription.isUnsubscribed())
             mSubscription.unsubscribe();
 
+        Common.log(TAG, "THREAD ID : " + Thread.currentThread().getId());
+
         mSubscription = getDataManager()
                 .syncFeeds()
                 .subscribeOn(Schedulers.io())
